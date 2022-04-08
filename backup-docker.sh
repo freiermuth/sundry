@@ -4,6 +4,7 @@ BACKUP_LABEL=us.freiermuth.backup
 BACKUP_CONTAINERS=$(docker ps -qaf "label=$BACKUP_LABEL")
 DATE=$(date '+%Y-%m-%d')
 BACKUP_DIR=/backup
+RETENTION_DAYS=30
 
 
 for c in $BACKUP_CONTAINERS
@@ -29,3 +30,6 @@ do
 
         docker start $c
 done
+
+# clean up old backups
+sudo find /backup -mtime +$RETENTION_DAYS -name *.tar.gz -exec rm {} \;
